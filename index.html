@@ -3,178 +3,282 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mes Vacances</title>
+    <title>Mes Vacances V2</title>
     <style>
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background-color: #f4f7f6;
-            color: #333;
-            margin: 0;
-            padding: 20px;
+        body { 
+            font-family: system-ui, -apple-system, sans-serif; 
+            background: #f4f7f6; 
+            margin: 0; 
+            padding: 20px; 
+            color: #333; 
         }
-        h1 {
-            text-align: center;
-            color: #2c3e50;
+        h1 { 
+            text-align: center; 
+            color: #2c3e50; 
         }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
         }
-        form {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 30px;
+        .card { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+            margin-bottom: 20px; 
         }
-        label {
-            font-weight: bold;
-            font-size: 0.9em;
+        label { 
+            font-weight: bold; 
+            font-size: 0.9em; 
+            display: block; 
+            margin-bottom: 5px; 
         }
-        input, textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-sizing: border-box;
+        .form-group { 
+            margin-bottom: 15px; 
+        }
+        input { 
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid #ccc; 
+            border-radius: 8px; 
+            box-sizing: border-box; 
             font-family: inherit;
         }
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
+        button { 
+            background: #3498db; 
+            color: white; 
+            border: none; 
+            padding: 10px 15px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold; 
             font-size: 1em;
         }
-        button:hover {
-            background-color: #2980b9;
+        button:hover { 
+            background: #2980b9; 
         }
-        .voyage-card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 15px;
-            border-left: 5px solid #3498db;
+        .btn-danger { 
+            background: #e74c3c; 
         }
-        .voyage-card h2 {
-            margin-top: 0;
-            color: #2c3e50;
+        .btn-danger:hover { 
+            background: #c0392b; 
         }
-        .voyage-card p {
-            margin: 8px 0;
-            line-height: 1.4;
+        .btn-edit { 
+            background: #f39c12; 
         }
-        .btn-supprimer {
-            background-color: #e74c3c;
-            margin-top: 10px;
+        .btn-edit:hover { 
+            background: #e67e22; 
         }
-        .btn-supprimer:hover {
-            background-color: #c0392b;
+        .activites-container { 
+            border: 1px solid #eee; 
+            padding: 15px; 
+            border-radius: 8px; 
+            background: #fafafa; 
+        }
+        .flex-row { 
+            display: flex; 
+            gap: 10px; 
+            align-items: stretch; 
+        }
+        .flex-row input { 
+            flex-grow: 1; 
+            margin-bottom: 0; 
+        }
+        ul { 
+            padding-left: 20px; 
+            margin-top: 10px; 
+        }
+        li { 
+            margin-bottom: 8px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .btn-small { 
+            padding: 5px 10px; 
+            font-size: 0.8em; 
+        }
+        .actions-voyage { 
+            display: flex; 
+            gap: 10px; 
+            margin-top: 15px; 
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>Mes Vacances</h1>
 
-<div class="container">
-    <h1>Préparation Vacances</h1>
+        <div class="card">
+            <form id="form-voyage">
+                <input type="hidden" id="edit-index" value="-1">
+                
+                <div class="form-group">
+                    <label for="destination">Destination</label>
+                    <input type="text" id="destination" required>
+                </div>
+                
+                <div class="flex-row form-group">
+                    <div style="flex: 1;">
+                        <label for="date-debut">Début</label>
+                        <input type="date" id="date-debut" required>
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="date-fin">Fin</label>
+                        <input type="date" id="date-fin" required>
+                    </div>
+                </div>
 
-    <form id="form-vacances">
-        <div>
-            <label for="destination">Destination</label>
-            <input type="text" id="destination" required>
+                <div class="form-group">
+                    <label for="budget">Budget estimé (€)</label>
+                    <input type="number" id="budget">
+                </div>
+
+                <div class="form-group activites-container">
+                    <label>Activités prévues</label>
+                    <div class="flex-row">
+                        <input type="text" id="nouvelle-activite" placeholder="Ex: Visite du musée">
+                        <button type="button" id="btn-add-activite">Ajouter</button>
+                    </div>
+                    <ul id="liste-activites-temp"></ul>
+                </div>
+
+                <button type="submit" id="btn-submit" style="width: 100%;">Enregistrer le voyage</button>
+                <button type="button" id="btn-cancel" class="btn-danger" style="width: 100%; margin-top: 10px; display: none;">Annuler la modification</button>
+            </form>
         </div>
-        
-        <div>
-            <label for="date-debut">Date de début</label>
-            <input type="date" id="date-debut" required>
-        </div>
 
-        <div>
-            <label for="date-fin">Date de fin</label>
-            <input type="date" id="date-fin" required>
-        </div>
+        <div id="liste-voyages"></div>
+    </div>
 
-        <div>
-            <label for="budget">Budget estimé (€)</label>
-            <input type="number" id="budget">
-        </div>
+    <script>
+        let voyages = JSON.parse(localStorage.getItem('mesVoyagesData')) || [];
+        let activitesTemp = [];
 
-        <div>
-            <label for="activites">Activités prévues</label>
-            <textarea id="activites" rows="4" required></textarea>
-        </div>
+        const formVoyage = document.getElementById('form-voyage');
+        const editIndexInput = document.getElementById('edit-index');
+        const inputActivite = document.getElementById('nouvelle-activite');
+        const btnAddActivite = document.getElementById('btn-add-activite');
+        const listeActivitesTemp = document.getElementById('liste-activites-temp');
+        const listeVoyages = document.getElementById('liste-voyages');
+        const btnSubmit = document.getElementById('btn-submit');
+        const btnCancel = document.getElementById('btn-cancel');
 
-        <button type="submit">Ajouter ce voyage</button>
-    </form>
+        function afficherActivitesTemp() {
+            listeActivitesTemp.innerHTML = '';
+            activitesTemp.forEach((act, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span>${act}</span>
+                    <button type="button" class="btn-danger btn-small" onclick="supprimerActiviteTemp(${index})">X</button>
+                `;
+                listeActivitesTemp.appendChild(li);
+            });
+        }
 
-    <div id="liste-vacances"></div>
-</div>
+        btnAddActivite.addEventListener('click', () => {
+            const val = inputActivite.value.trim();
+            if (val !== '') {
+                activitesTemp.push(val);
+                inputActivite.value = '';
+                afficherActivitesTemp();
+            }
+        });
 
-<script>
-    const form = document.getElementById('form-vacances');
-    const liste = document.getElementById('liste-vacances');
-    
-    let voyages = JSON.parse(localStorage.getItem('mesVoyages')) || [];
+        window.supprimerActiviteTemp = function(index) {
+            activitesTemp.splice(index, 1);
+            afficherActivitesTemp();
+        };
 
-    function afficherVoyages() {
-        liste.innerHTML = '';
-        
-        voyages.forEach((voyage, index) => {
-            const card = document.createElement('div');
-            card.className = 'voyage-card';
+        function afficherVoyages() {
+            listeVoyages.innerHTML = '';
+            voyages.forEach((v, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.style.borderLeft = '5px solid #3498db';
+
+                let activitesHtml = v.activites.length > 0 
+                    ? '<ul>' + v.activites.map(a => `<li>${a}</li>`).join('') + '</ul>'
+                    : '<p><em>Aucune activité prévue</em></p>';
+
+                card.innerHTML = `
+                    <h2 style="margin-top:0;">${v.destination}</h2>
+                    <p><strong>Dates :</strong> ${v.dateDebut} au ${v.dateFin}</p>
+                    ${v.budget ? `<p><strong>Budget :</strong> ${v.budget} €</p>` : ''}
+                    <p><strong>Activités :</strong></p>
+                    ${activitesHtml}
+                    <div class="actions-voyage">
+                        <button class="btn-edit" onclick="editerVoyage(${index})">Modifier</button>
+                        <button class="btn-danger" onclick="supprimerVoyage(${index})">Supprimer</button>
+                    </div>
+                `;
+                listeVoyages.appendChild(card);
+            });
+        }
+
+        formVoyage.addEventListener('submit', (e) => {
+            e.preventDefault();
             
-            let budgetHtml = '';
-            if (voyage.budget) {
-                budgetHtml = `<p><strong>Budget :</strong> ${voyage.budget} €</p>`;
+            const voyage = {
+                destination: document.getElementById('destination').value,
+                dateDebut: document.getElementById('date-debut').value,
+                dateFin: document.getElementById('date-fin').value,
+                budget: document.getElementById('budget').value,
+                activites: [...activitesTemp]
+            };
+
+            const editIndex = parseInt(editIndexInput.value);
+
+            if (editIndex === -1) {
+                voyages.push(voyage);
+            } else {
+                voyages[editIndex] = voyage;
             }
 
-            card.innerHTML = `
-                <h2>${voyage.destination}</h2>
-                <p><strong>Du :</strong> ${voyage.dateDebut} <strong>au</strong> ${voyage.dateFin}</p>
-                ${budgetHtml}
-                <p><strong>Activités :</strong><br> ${voyage.activites.replace(/\n/g, '<br>')}</p>
-                <button class="btn-supprimer" onclick="supprimerVoyage(${index})">Supprimer</button>
-            `;
-            
-            liste.appendChild(card);
+            localStorage.setItem('mesVoyagesData', JSON.stringify(voyages));
+            reinitialiserFormulaire();
+            afficherVoyages();
         });
-    }
 
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const nouveauVoyage = {
-            destination: document.getElementById('destination').value,
-            dateDebut: document.getElementById('date-debut').value,
-            dateFin: document.getElementById('date-fin').value,
-            budget: document.getElementById('budget').value,
-            activites: document.getElementById('activites').value
+        window.supprimerVoyage = function(index) {
+            voyages.splice(index, 1);
+            localStorage.setItem('mesVoyagesData', JSON.stringify(voyages));
+            if (parseInt(editIndexInput.value) === index) {
+                reinitialiserFormulaire();
+            }
+            afficherVoyages();
         };
-        
-        voyages.push(nouveauVoyage);
-        
-        localStorage.setItem('mesVoyages', JSON.stringify(voyages));
-        
-        form.reset();
-        
+
+        window.editerVoyage = function(index) {
+            const v = voyages[index];
+            document.getElementById('destination').value = v.destination;
+            document.getElementById('date-debut').value = v.dateDebut;
+            document.getElementById('date-fin').value = v.dateFin;
+            document.getElementById('budget').value = v.budget || '';
+            
+            activitesTemp = [...v.activites];
+            editIndexInput.value = index;
+            
+            btnSubmit.textContent = "Mettre à jour le voyage";
+            btnCancel.style.display = "block";
+            
+            afficherActivitesTemp();
+            window.scrollTo(0, 0);
+        };
+
+        btnCancel.addEventListener('click', reinitialiserFormulaire);
+
+        function reinitialiserFormulaire() {
+            formVoyage.reset();
+            activitesTemp = [];
+            editIndexInput.value = -1;
+            btnSubmit.textContent = "Enregistrer le voyage";
+            btnCancel.style.display = "none";
+            afficherActivitesTemp();
+        }
+
         afficherVoyages();
-    });
-
-    window.supprimerVoyage = function(index) {
-        voyages.splice(index, 1);
-        localStorage.setItem('mesVoyages', JSON.stringify(voyages));
-        afficherVoyages();
-    };
-
-    afficherVoyages();
-</script>
-
+        afficherActivitesTemp();
+    </script>
 </body>
 </html>
