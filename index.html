@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Vacances</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        label {
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .voyage-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            border-left: 5px solid #3498db;
+        }
+        .voyage-card h2 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .voyage-card p {
+            margin: 8px 0;
+            line-height: 1.4;
+        }
+        .btn-supprimer {
+            background-color: #e74c3c;
+            margin-top: 10px;
+        }
+        .btn-supprimer:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Préparation Vacances</h1>
+
+    <form id="form-vacances">
+        <div>
+            <label for="destination">Destination</label>
+            <input type="text" id="destination" required>
+        </div>
+        
+        <div>
+            <label for="date-debut">Date de début</label>
+            <input type="date" id="date-debut" required>
+        </div>
+
+        <div>
+            <label for="date-fin">Date de fin</label>
+            <input type="date" id="date-fin" required>
+        </div>
+
+        <div>
+            <label for="budget">Budget estimé (€)</label>
+            <input type="number" id="budget">
+        </div>
+
+        <div>
+            <label for="activites">Activités prévues</label>
+            <textarea id="activites" rows="4" required></textarea>
+        </div>
+
+        <button type="submit">Ajouter ce voyage</button>
+    </form>
+
+    <div id="liste-vacances"></div>
+</div>
+
+<script>
+    const form = document.getElementById('form-vacances');
+    const liste = document.getElementById('liste-vacances');
+    
+    let voyages = JSON.parse(localStorage.getItem('mesVoyages')) || [];
+
+    function afficherVoyages() {
+        liste.innerHTML = '';
+        
+        voyages.forEach((voyage, index) => {
+            const card = document.createElement('div');
+            card.className = 'voyage-card';
+            
+            let budgetHtml = '';
+            if (voyage.budget) {
+                budgetHtml = `<p><strong>Budget :</strong> ${voyage.budget} €</p>`;
+            }
+
+            card.innerHTML = `
+                <h2>${voyage.destination}</h2>
+                <p><strong>Du :</strong> ${voyage.dateDebut} <strong>au</strong> ${voyage.dateFin}</p>
+                ${budgetHtml}
+                <p><strong>Activités :</strong><br> ${voyage.activites.replace(/\n/g, '<br>')}</p>
+                <button class="btn-supprimer" onclick="supprimerVoyage(${index})">Supprimer</button>
+            `;
+            
+            liste.appendChild(card);
+        });
+    }
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const nouveauVoyage = {
+            destination: document.getElementById('destination').value,
+            dateDebut: document.getElementById('date-debut').value,
+            dateFin: document.getElementById('date-fin').value,
+            budget: document.getElementById('budget').value,
+            activites: document.getElementById('activites').value
+        };
+        
+        voyages.push(nouveauVoyage);
+        
+        localStorage.setItem('mesVoyages', JSON.stringify(voyages));
+        
+        form.reset();
+        
+        afficherVoyages();
+    });
+
+    window.supprimerVoyage = function(index) {
+        voyages.splice(index, 1);
+        localStorage.setItem('mesVoyages', JSON.stringify(voyages));
+        afficherVoyages();
+    };
+
+    afficherVoyages();
+</script>
+
+</body>
+</html>
