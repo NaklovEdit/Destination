@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mes Vacances V2</title>
+    <title>Mes Vacances V3</title>
     <style>
         body { 
             font-family: system-ui, -apple-system, sans-serif; 
@@ -69,6 +69,12 @@
         .btn-edit:hover { 
             background: #e67e22; 
         }
+        .btn-secondary {
+            background: #7f8c8d;
+        }
+        .btn-secondary:hover {
+            background: #95a5a6;
+        }
         .activites-container { 
             border: 1px solid #eee; 
             padding: 15px; 
@@ -103,11 +109,26 @@
             gap: 10px; 
             margin-top: 15px; 
         }
+        .export-import-zone {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+        #file-input {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Mes Vacances</h1>
+
+        <div class="export-import-zone">
+            <button class="btn-secondary" onclick="exporterJSON()">Exporter (Sauvegarder)</button>
+            <button class="btn-secondary" onclick="declencherImport()">Importer (Charger)</button>
+            <input type="file" id="file-input" accept=".json" onchange="importerJSON(event)">
+        </div>
 
         <div class="card">
             <form id="form-voyage">
@@ -235,18 +256,16 @@
                 voyages[editIndex] = voyage;
             }
 
-            localStorage.setItem('mesVoyagesData', JSON.stringify(voyages));
+            sauvegarderEtRafraichir();
             reinitialiserFormulaire();
-            afficherVoyages();
         });
 
         window.supprimerVoyage = function(index) {
             voyages.splice(index, 1);
-            localStorage.setItem('mesVoyagesData', JSON.stringify(voyages));
+            sauvegarderEtRafraichir();
             if (parseInt(editIndexInput.value) === index) {
                 reinitialiserFormulaire();
             }
-            afficherVoyages();
         };
 
         window.editerVoyage = function(index) {
@@ -276,6 +295,50 @@
             btnCancel.style.display = "none";
             afficherActivitesTemp();
         }
+
+        function sauvegarderEtRafraichir() {
+            localStorage.setItem('mesVoyagesData', JSON.stringify(voyages));
+            afficherVoyages();
+        }
+
+        window.exporterJSON = function() {
+            const dataStr = JSON.stringify(voyages, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'mes_vacances.json';
+            link.click();
+            
+            URL.revokeObjectURL(url);
+        };
+
+        window.declencherImport = function() {
+            document.getElementById('file-input').click();
+        };
+
+        window.importerJSON = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if (Array.isArray(importedData)) {
+                        voyages = importedData;
+                        sauvegarderEtRafraichir();
+                        alert("Importation réussie !");
+                    } else {
+                        alert("Format de fichier invalide.");
+                    }
+                } catch (err) {
+                    alert("Erreur lors de la lecture du fichier.");
+                }
+            };
+            reader.readAsText(file);
+        };
 
         afficherVoyages();
         afficherActivitesTemp();
